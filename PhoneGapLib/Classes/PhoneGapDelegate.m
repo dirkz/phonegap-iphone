@@ -255,17 +255,20 @@ static NSString *gapVersion;
 	webView.detectsPhoneNumbers = [detectNumber boolValue];
 #endif
 
-	/*
-	 * imageView - is the Default loading screen, it stay up until the app and UIWebView (WebKit) has completly loaded.
-	 * You can change this image by swapping out the Default.png file within the resource folder.
-	 */
-	UIImage* image = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Default" ofType:@"png"]];
-	imageView = [[UIImageView alloc] initWithImage:image];
-	[image release];
-	
-    imageView.tag = 1;
-	[window addSubview:imageView];
-	[imageView release];
+	BOOL suppressSplashScreen = [[settings objectForKey:@"SuppressSplashScreen"] boolValue];
+	if (!suppressSplashScreen) {
+		/*
+		 * imageView - is the Default loading screen, it stay up until the app and UIWebView (WebKit) has completly loaded.
+		 * You can change this image by swapping out the Default.png file within the resource folder.
+		 */
+		UIImage* image = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Default" ofType:@"png"]];
+		imageView = [[UIImageView alloc] initWithImage:image];
+		[image release];
+		
+		imageView.tag = 1;
+		[window addSubview:imageView];
+		[imageView release];
+	}
 
 	/*
 	 * The Activity View is the top spinning throbber in the status/battery bar. We init it with the default Grey Style.
