@@ -13,6 +13,12 @@
 #import "InvokedUrlCommand.h"
 #import "Contact.h"
 
+@interface PhoneGapDelegate ()
+
+- (void)webViewDidFinishLoadDelayed:(UIWebView *)theWebView;
+
+@end
+
 @implementation PhoneGapDelegate
 
 @synthesize window;
@@ -418,12 +424,22 @@ static NSString *gapVersion;
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 	activityView.hidden = YES;	
 
-	imageView.hidden = YES;
+	CGFloat splashScreenDelay = [[settings objectForKey:@"SplashScreenDelay"] floatValue];
+	if (splashScreenDelay > 0.f) {
+		[self performSelector:@selector(webViewDidFinishLoadDelayed:) withObject:theWebView afterDelay:splashScreenDelay];
+	} else {
+		imageView.hidden = YES;
+		[window bringSubviewToFront:viewController.view];
+	}
 	
-	[window bringSubviewToFront:viewController.view];
 	webView = theWebView; 	
 }
 
+
+- (void)webViewDidFinishLoadDelayed:(UIWebView *)theWebView {
+	imageView.hidden = YES;
+	[window bringSubviewToFront:viewController.view];
+}
 
 /**
  * Fail Loading With Error
